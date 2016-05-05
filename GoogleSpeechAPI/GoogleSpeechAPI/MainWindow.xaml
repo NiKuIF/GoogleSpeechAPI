@@ -5,11 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GoogleSpeechAPI"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
+        Title="MainWindow" Height="266.62" Width="525">
     <Grid>
-        <Button x:Name="btn_startRecording" Content="Start Recording" HorizontalAlignment="Left" Margin="105,56,0,0" VerticalAlignment="Top" Width="101" RenderTransformOrigin="2.017,0.551" Click="btn_startRecording_Click"/>
-        <Button x:Name="btn_sendFlacFile" Content="send" HorizontalAlignment="Left" Margin="277,56,0,0" VerticalAlignment="Top" Width="75" Click="btn_sendFlacFile_Click"/>
-        <TextBox x:Name="txt_result" HorizontalAlignment="Left" Height="200" Margin="10,109,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="497"/>
+        <Button x:Name="btn_startRecording" Content="Start Recording" HorizontalAlignment="Left" Margin="10,62,0,0" VerticalAlignment="Top" Width="101" RenderTransformOrigin="2.017,0.551" Click="btn_startRecording_Click"/>
+        <Button x:Name="btn_sendFlacFile" Content="evaluate" HorizontalAlignment="Left" Margin="10,127,0,0" VerticalAlignment="Top" Width="101" Click="btn_sendFlacFile_Click" IsEnabled="False"/>
+        <TextBox x:Name="txt_result" HorizontalAlignment="Left" Height="200" Margin="124,24,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="383"/>
+        <Button x:Name="btn_stopRecording" Content="Stop Recording" HorizontalAlignment="Left" Margin="10,94,0,0" VerticalAlignment="Top" Width="101" Click="btn_stopRecording_Click"/>
+        <ComboBox x:Name="cb_mics" HorizontalAlignment="Left" Margin="10,24,0,0" VerticalAlignment="Top" Width="101"/>
 
     </Grid>
 </Window>
