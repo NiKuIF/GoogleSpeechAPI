@@ -133,7 +133,7 @@ namespace GoogleSpeechAPI
             HttpWebRequest _HWR_SpeechToText = null;
             _HWR_SpeechToText =
                         (HttpWebRequest)HttpWebRequest.Create(
-                            "https://www.google.com/speech-api/v2/recognize?output=json&lang=en-us&key=AIzaSyBcLgcy7SIGfKwaVyuhtv1Z7Hf40K87GvM");
+                            "https://www.google.com/speech-api/v2/recognize?output=json&lang=en-us&key=ADD_API_KEY");
             _HWR_SpeechToText.Credentials = CredentialCache.DefaultCredentials;
             _HWR_SpeechToText.Method = "POST";
             _HWR_SpeechToText.ContentType = "audio/x-flac; rate=44100";
