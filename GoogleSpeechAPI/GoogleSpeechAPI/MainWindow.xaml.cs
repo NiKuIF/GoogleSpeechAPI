@@ -19,6 +19,9 @@ using System.IO;
 using NAudio.CoreAudioApi;
 using NAudio.Wave;
 
+using CUETools.Codecs;
+using CUETools.Codecs.FLAKE;
+
 
 namespace GoogleSpeechAPI
 {
@@ -47,14 +50,41 @@ namespace GoogleSpeechAPI
             startRecordingClick();
         }
 
-        private void convertToFlac()
+        private void convertToFlac()// Stream sourceStream, Stream destinationStream)
         {
-          
+            // wav-File Stream
+            var sourceStream = new FileStream(System.IO.Path.Combine(outputFolder, outputFilename), FileMode.Open);
+            //var destinationStream = new FileStream(System.IO.Path.Combine(outputFolder, "myFlacTest.flac"), FileMode.Open);
 
-        }           
+
+            var audioSource = new WAVReader(null, sourceStream);
+            try
+            {
+              /*  if (audioSource.PCM.SampleRate != 16000)
+                {
+                    throw new InvalidOperationException("Incorrect frequency - WAV file must be at 16 KHz.");
+                }*/
+
+                var buff = new AudioBuffer(audioSource, 0x10000);
+                // var flakeWriter = new FlakeWriter(null, destinationStream, audioSource.PCM);
+                var flakeWriter = new FlakeWriter(System.IO.Path.Combine(outputFolder, "myFlacTest.flac"), audioSource.PCM);
+
+                flakeWriter.CompressionLevel = 8;
+                while (audioSource.Read(buff, -1) != 0)
+                {
+                    flakeWriter.Write(buff);
+                }
+                flakeWriter.Close();
+                //destinationStream.Close();
+            }
+            finally
+            {
+                audioSource.Close();
+            }
+        }    
 
 
-        private void listAllInputDevices()
+    private void listAllInputDevices()
         {
             var deviceEnum = new MMDeviceEnumerator();
             var devices = deviceEnum.EnumerateAudioEndPoints(DataFlow.Capture, DeviceState.Active).ToList();
@@ -87,7 +117,7 @@ namespace GoogleSpeechAPI
 
             // use WaveIn, mybe try WaceInEvent
             newWaveIn = new WaveIn();
-            newWaveIn.WaveFormat = new WaveFormat(8000, 1);
+            newWaveIn.WaveFormat = new WaveFormat(16000, 1);//(8000, 1);
 
             newWaveIn.DataAvailable += OnDataAvailable;
             newWaveIn.RecordingStopped += OnRecordingStopped;
@@ -97,9 +127,12 @@ namespace GoogleSpeechAPI
         void OnDataAvailable(object sender, WaveInEventArgs e)
         {
             Console.WriteLine("Data Available");
+            if (writer == null)
+                return;
+
             writer.Write(e.Buffer, 0, e.BytesRecorded);
             int secondsRecorded = (int)(writer.Length / writer.WaveFormat.AverageBytesPerSecond);
-            if (secondsRecorded >= 5)
+            if (secondsRecorded >= 3)
             {
                 StopRecording();
             }
@@ -114,6 +147,9 @@ namespace GoogleSpeechAPI
         // when we stop recording, over an event or something else
         void StopRecording()
         {
+            if (writer == null)
+                return;
+
             Console.WriteLine("StopRecording");
             waveIn.StopRecording();
             writer.Dispose();
@@ -123,7 +159,7 @@ namespace GoogleSpeechAPI
 
         void sendFlacFile()
         {
-            FileStream fileStream = File.OpenRead("test.flac");
+            FileStream fileStream = File.OpenRead("C:\\Users\\niskurt-win10\\AppData\\Local\\Temp\\NAudioDemo\\myFlacTest.flac");
             MemoryStream memoryStream = new MemoryStream();
             memoryStream.SetLength(fileStream.Length);
             fileStream.Read(memoryStream.GetBuffer(), 0, (int)fileStream.Length);
@@ -133,10 +169,10 @@ namespace GoogleSpeechAPI
             HttpWebRequest _HWR_SpeechToText = null;
             _HWR_SpeechToText =
                         (HttpWebRequest)HttpWebRequest.Create(
-                            "https://www.google.com/speech-api/v2/recognize?output=json&lang=en-us&key=ADD_API_KEY");
+                            "https://www.google.com/speech-api/v2/recognize?output=json&lang=en-us&key=AIzaSyBcLgcy7SIGfKwaVyuhtv1Z7Hf40K87GvM");
             _HWR_SpeechToText.Credentials = CredentialCache.DefaultCredentials;
             _HWR_SpeechToText.Method = "POST";
-            _HWR_SpeechToText.ContentType = "audio/x-flac; rate=44100";
+            _HWR_SpeechToText.ContentType = "audio/x-flac; rate=16000";
             _HWR_SpeechToText.ContentLength = BA_AudioFile.Length;
             Stream stream = _HWR_SpeechToText.GetRequestStream();
             stream.Write(BA_AudioFile, 0, BA_AudioFile.Length);
@@ -146,10 +182,17 @@ namespace GoogleSpeechAPI
             if (HWR_Response.StatusCode == HttpStatusCode.OK)
             {
                 StreamReader SR_Response = new StreamReader(HWR_Response.GetResponseStream());
-                Console.WriteLine("Stream was OK");
-                Console.WriteLine(SR_Response.ReadToEnd());
+
+                string result = SR_Response.ReadToEnd();
+
+                txt_result.Text = result;
+                Console.WriteLine(result);
             }
         }
-            
+
+        private void btn_sendFlacFile_Click(object sender, RoutedEventArgs e)
+        {
+            sendFlacFile();
+        }
     }
 }

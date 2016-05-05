@@ -35,6 +35,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CUETools.Codecs">
+      <HintPath>..\CUETools.Codecs.dll</HintPath>
+    </Reference>
+    <Reference Include="CUETools.Codecs.FLAKE">
+      <HintPath>..\CUETools.Codecs.FLAKE.dll</HintPath>
+    </Reference>
     <Reference Include="NAudio">
       <HintPath>..\NAudio.dll</HintPath>
     </Reference>
