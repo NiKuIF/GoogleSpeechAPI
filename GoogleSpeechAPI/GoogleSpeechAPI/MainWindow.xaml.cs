@@ -227,9 +227,7 @@ namespace GoogleSpeechAPI
                 txt_result.Text = result;
                 Console.WriteLine(result);
 
-                //var serializer = new JavaScriptSerializer();
-                //var deserializedResult = serializer.Deserialize<List<Person>>(result);
-
+                // this is a little hack, but i was not motivated enough
                 if (result.StartsWith("{\"result\":[]}\n{\"result\":[{\"alternative\":"))
                 {
                     result = result.Substring("{\"result\":[]}\n{\"result\":[{\"alternative\":".Length);
@@ -240,43 +238,10 @@ namespace GoogleSpeechAPI
                     result = result.Substring(0, result.Length - ",\"final\":true}],\"result_index\":0}\n".Length);
                 }
 
-
                 var serializer = new JavaScriptSerializer();
                 var deserializedResult = serializer.Deserialize<List<Person>>(result);
 
                 txt_result.Text = deserializedResult[0].transcript;
-
-                Console.WriteLine("testte");
-
-                /*
-
-            "{\"result\":[]}\n
-            {\"result\":[{\"alternative\":[{\"transcript\":\"hello Mark how are you\",\"confidence\":0.96041793},{\"transcript\":\"hello Mark are you\"},{\"transcript\":\"hello Mark how are youuu\"},{\"transcript\":\"hello Mark how are ya\"},{\"transcript\":\"hello Mark how are young\"}],\"final\":true}],\"result_index\":0}\n"
-
-
-
-            [
-                {"transcript":"hello Mark how are you","confidence":0.98267901},
-                {"transcript":"hello Mark how are U"},
-                {"transcript":"hello Mark how are youuu"},
-                {"transcript":"hello Mark how are you I"},
-                {"transcript":"hello Mark how are your"}
-            ]
-
-            {\"result\":[]}{\"result\":[{\"alternative\":
-
-                    {"result":[]}
-                    {"result":[
-                        {"alternative":[
-                            {"transcript":"hello Mark how are you","confidence":0.88823956},
-                            {"transcript":"hello Mark"},
-                            {"transcript":"hello Mark I"},
-                            {"transcript":"hello Mark I am"},
-                            {"transcript":"hello Mark Ohio"}],
-                        "final":true}],
-                    "result_index":0}
-
-                 */
 
             }
         }
